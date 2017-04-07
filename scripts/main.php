@@ -1,20 +1,18 @@
 <?php
 
+# QLocalServer QLocalSocket QIODevice QTabWidget QPlainTextEdit QWidget QString QRegExp
+# QJsonDocument QJsonObject QJsonArray QJsonValue
+# QScrollArea QFrame QVBoxLayout QHBoxLayout QGridLayout QSizePolicy QLabel
+
+require_once 'ListWidget.php';
+require_once 'Json.php';
+require_once 'ObjectWidget.php';
+
 $app = new QApplication($argc, $argv);
 
-class MainWindow extends QWidget {
-    public function __construct($parent = null) {
-        parent::__construct($parent);
-        
-        $this->initComponents();
-    }
-    
-    private function initComponents() {
-        // Write your code here
-    }
-}
+require_once 'PQDebugger.php';
 
-$window = new MainWindow;
-$window->show();
+$window = new PQDebugger();
+$window->showMaximized();
 
 return $app->exec();
