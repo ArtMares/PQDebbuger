@@ -11,10 +11,6 @@ class ObjectWidget extends QWidget {
     
     private $ui = [];
     
-    private $row = 0;
-    
-    private $col = 0;
-    
     public $z_id;
     
     public $o_id;
@@ -31,27 +27,79 @@ class ObjectWidget extends QWidget {
                 border: 1px solid #626262;
             }
         ';
+        
+        $this->initComponents();
     }
     
-    public function add($type, $value) {
-        $value = (string)$value;
-        if(isset($this->ui[$type])) {
-            if($this->data[$type] !== $value) {
-                $this->ui[$type]->text = $this->ui[$type]->text() . PHP_EOL . $value;
-                $this->data[$type] = $value;
-            }
+    public function initComponents() {
+        $row = 0;
+        
+        $thread = new QLabel($this);
+        $thread->text = 'thread:';
+        $this->ui['thread'] = new QLabel($this);
+        
+        $this->layout()->addWidget($thread, $row, 0);
+        $this->layout()->addWidget($this->ui['thread'], $row, 1);
+        
+        $zobject = new QLabel($this);
+        $zobject->text = 'zobject:';
+        $this->ui['zobject'] = new QLabel($this);
+        
+        $this->layout()->addWidget($zobject, $row, 2);
+        $this->layout()->addWidget($this->ui['zobject'], $row, 3);
+        
+        $object = new QLabel($this);
+        $object->text = 'object:';
+        $this->ui['object'] = new QLabel($this);
+        
+        $this->layout()->addWidget($object, $row, 4);
+        $this->layout()->addWidget($this->ui['object'], $row, 5);
+        
+        $row++;
+        
+        $zclass = new QLabel($this);
+        $zclass->text = 'zclass:';
+        $this->ui['zclass'] = new QLabel($this);
+        
+        $this->layout()->addWidget($zclass, $row, 0);
+        $this->layout()->addWidget($this->ui['zclass'], $row, 1);
+        
+        $data = new QLabel($this);
+        $data->text = 'data:';
+        $this->ui['data'] = new QLabel($this);
+        
+        $this->layout()->addWidget($data, $row, 2);
+        $this->layout()->addWidget($this->ui['data'], $row, 3);
+        
+        $signature = new QLabel($this);
+        $signature->text = 'signature:';
+        $this->ui['signature'] = new QLabel($this);
+        
+        $this->layout()->addWidget($signature, $row, 4);
+        $this->layout()->addWidget($this->ui['signature'], $row, 5);
+        
+        $row++;
+        
+        $command = new QLabel($this);
+        $command->text = 'command:';
+        
+        $this->layout()->addWidget($command, $row, 0, 1, 6);
+        
+        $row++;
+        
+        $this->ui['command'] = new QLabel($this);
+        
+        $this->layout()->addWidget($this->ui['command'], $row, 0, 1, 6);
+    }
+    
+    public function set($key, $value) {
+        if(!isset($this->data[$key])) {
+            $this->ui[$key]->text = $value;
+            $this->data[$key] = $value;
         } else {
-            $_type = new QLabel($this);
-            $_type->text = $type;
-            $this->ui[$type] = new QLabel($this);
-            $this->ui[$type]->text = $value;
-            $this->data[$type] = $value;
-            if($this->col > 3) {
-                $this->row++;
-                $this->col = 0;
+            if($key == 'command') {
+                $this->ui[$key]->text = $this->ui[$key]->text() . PHP_EOL . $value;
             }
-            $this->layout()->addWidget($_type, $this->row, $this->col++);
-            $this->layout()->addWidget($this->ui[$type], $this->row, $this->col++);
         }
     }
 }

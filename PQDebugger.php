@@ -140,7 +140,7 @@ class PQDebugger extends QWidget {
                 $client->objects[$id] = &$widget;
             }
             if($widget->parent() == false) $client->list->addWidget($widget);
-            foreach($tmp as $key => $value) $widget->add($key, $value);
+            foreach($tmp as $key => $value) $widget->set($key, $value);
         } else {
             $client->log->appendPlainText($log);
         }
