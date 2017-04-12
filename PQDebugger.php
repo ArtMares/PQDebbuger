@@ -23,7 +23,7 @@ class PQDebugger extends QWidget {
         $this->initComponents();
         
         $this->server = new QLocalServer($this);
-        $this->server->listen('PQEngine Debug Server');
+        $this->server->listen('PQDebugger');
         $this->server->connect(SIGNAL('newConnection()'), $this, SLOT('incomingConnection()'));
     }
     
@@ -86,12 +86,17 @@ class PQDebugger extends QWidget {
             
             $client->list = new ListWidget();
             
+            $client->count = new QLabel();
+            
             $client->objects = [];
+            $client->links = [];
+            $client->json = [];
             
             $client->widget = new QWidget();
-            $client->widget->setLayout(new QHBoxLayout());
-            $client->widget->layout()->addWidget($client->list);
-            $client->widget->layout()->addWidget($client->log);
+            $client->widget->setLayout(new QGridLayout());
+            $client->widget->layout()->addWidget($client->list, 1, 0);
+            $client->widget->layout()->addWidget($client->count, 0, 0);
+            $client->widget->layout()->addWidget($client->log, 0, 1, 2, 1);
             
             $tabIndex = $this->tabs->addTab($client->widget, "$name [$id]");
             $this->tabs->setCurrentIndex($tabIndex);
@@ -121,11 +126,16 @@ class PQDebugger extends QWidget {
                 $tmp[$key] = $value;
             }
             foreach($ids as $id) {
-                if($this->checkObject($id, $client->objects)) {
-                    $widget = $client->objects[$id];
+                if($this->checkObject($id, $client->links)) {
+                    $widget = $client->links[$id];
                 }
             }
-            if(!isset($widget)) $widget = new ObjectWidget();
+            if(!isset($widget)) {
+                $widget = new ObjectWidget();
+                $client->objects[] = $widget;
+                $client->list->addWidget($widget);
+                $client->count->text = 'Objects count: '.count($client->objects);
+            }
             foreach($ids as $id) {
 //                if(substr_count('zobject', $id) > 0) {
 //                    if(is_null($widget->z_id)) {
@@ -137,9 +147,8 @@ class PQDebugger extends QWidget {
 //                        $widget->o_id = $id;
 //                    }
 //                }
-                $client->objects[$id] = &$widget;
+                $client->links[$id] = &$widget;
             }
-            if($widget->parent() == false) $client->list->addWidget($widget);
             foreach($tmp as $key => $value) $widget->set($key, $value);
         } else {
             $client->log->appendPlainText($log);
