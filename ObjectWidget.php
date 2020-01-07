@@ -6,6 +6,15 @@
  * @copyright           artmares@influ.su
  */
 class ObjectWidget extends QWidget {
+
+    public $color;
+    public $thread;
+    public $zClass;
+    public $zObject;
+    public $zHandle;
+    public $qtClass;
+    public $history;
+
     
     private $styles = [
         'deleteObject' => '
@@ -22,91 +31,111 @@ class ObjectWidget extends QWidget {
     
     private $ui = [];
     
-    public function __construct() {
-        parent::__construct(null);
-        
+    public function __construct($parent = null) {
+        parent::__construct($parent);
         $this->objectName = 'ObjectWidget';
-        
-        $this->setLayout(new QGridLayout());
-        
         $this->styleSheet = $this->styles['default'];
-        
         $this->initComponents();
     }
     
     public function initComponents() {
-        $row = 0;
+        $this->setLayout(new QHBoxLayout());
+
+        $this->color = new QLabel();
+        $this->color->setSize(new QSize(18,18));
+        $this->layout()->addWidget($this->color);
+
+        $this->zClass = new QLabel();
+        $this->layout()->addWidget($this->zClass);
+
+        $icon = new QIcon(':/right-arrow.svg');
+        $label = new QLabel($this);
+        $label->setPixmap($icon);
+        $this->layout()->addWidget($label);
+
+        $this->qtClass = new QLabel();
+        $this->layout()->addWidget($this->qtClass);
         
-        $thread = new QLabel($this);
-        $thread->text = 'thread:';
-        $this->ui['thread'] = new QLabel($this);
+//        $thread = new QLabel($this);
+//        $thread->text = 'thread:';
+//        $this->ui['thread'] = new QLabel($this);
         
-        $this->layout()->addWidget($thread, $row, 0);
-        $this->layout()->addWidget($this->ui['thread'], $row, 1);
+//        $this->layout()->addWidget($thread);
+//        $this->layout()->addWidget($this->ui['thread'], $row, 1);
         
-        $zobject = new QLabel($this);
-        $zobject->text = 'zobject:';
-        $this->ui['zobject'] = new QLabel($this);
+//        $zobject = new QLabel($this);
+//        $zobject->text = 'zobject:';
+//        $this->ui['zobject'] = new QLabel($this);
         
-        $this->layout()->addWidget($zobject, $row, 2);
-        $this->layout()->addWidget($this->ui['zobject'], $row, 3);
+//        $this->layout()->addWidget($zobject, $row, 2);
+//        $this->layout()->addWidget($this->ui['zobject'], $row, 3);
         
-        $object = new QLabel($this);
-        $object->text = 'object:';
-        $this->ui['object'] = new QLabel($this);
-        
-        $this->layout()->addWidget($object, $row, 4);
-        $this->layout()->addWidget($this->ui['object'], $row, 5);
-        
-        $row++;
-        
-        $zclass = new QLabel($this);
-        $zclass->text = 'zclass:';
-        $this->ui['zclass'] = new QLabel($this);
-        
-        $this->layout()->addWidget($zclass, $row, 0);
-        $this->layout()->addWidget($this->ui['zclass'], $row, 1);
-    
-        $class = new QLabel($this);
-        $class->text = 'class:';
-        $this->ui['class'] = new QLabel($this);
-    
-        $this->layout()->addWidget($class, $row, 2);
-        $this->layout()->addWidget($this->ui['class'], $row, 3);
-        
-        $signature = new QLabel($this);
-        $signature->text = 'signature:';
-        $this->ui['signature'] = new QLabel($this);
-        
-        $this->layout()->addWidget($signature, $row, 4);
-        $this->layout()->addWidget($this->ui['signature'], $row, 5);
-        
-        $row++;
-        
-        $command = new QLabel($this);
-        $command->text = 'command:';
-        
-        $this->layout()->addWidget($command, $row, 0, 1, 2);
-    
-        $data = new QLabel($this);
-        $data->text = 'data:';
-        $this->ui['data'] = new QLabel($this);
-    
-        $this->layout()->addWidget($data, $row, 2);
-        $this->layout()->addWidget($this->ui['data'], $row, 3);
-        
-        $zhandle = new QLabel($this);
-        $zhandle->text = 'zhandle:';
-        $this->ui['zhandle'] = new QLabel($this);
-        
-        $this->layout()->addWidget($zhandle, $row, 4);
-        $this->layout()->addWidget($this->ui['zhandle'], $row, 5);
-        
-        $row++;
-        
-        $this->ui['command'] = new QLabel($this);
-        
-        $this->layout()->addWidget($this->ui['command'], $row, 0, 1, 3);
+//        $object = new QLabel($this);
+//        $object->text = 'object:';
+//        $this->ui['object'] = new QLabel($this);
+//
+//        $this->layout()->addWidget($object, $row, 4);
+//        $this->layout()->addWidget($this->ui['object'], $row, 5);
+//
+//        $row++;
+//
+//        $zclass = new QLabel($this);
+//        $zclass->text = 'zclass:';
+//        $this->ui['zclass'] = new QLabel($this);
+//
+//        $this->layout()->addWidget($zclass, $row, 0);
+//        $this->layout()->addWidget($this->ui['zclass'], $row, 1);
+//
+//        $class = new QLabel($this);
+//        $class->text = 'class:';
+//        $this->ui['class'] = new QLabel($this);
+//
+//        $this->layout()->addWidget($class, $row, 2);
+//        $this->layout()->addWidget($this->ui['class'], $row, 3);
+//
+//        $signature = new QLabel($this);
+//        $signature->text = 'signature:';
+//        $this->ui['signature'] = new QLabel($this);
+//
+//        $this->layout()->addWidget($signature, $row, 4);
+//        $this->layout()->addWidget($this->ui['signature'], $row, 5);
+//
+//        $row++;
+//
+//        $command = new QLabel($this);
+//        $command->text = 'command:';
+//
+//        $this->layout()->addWidget($command, $row, 0, 1, 2);
+//
+//        $data = new QLabel($this);
+//        $data->text = 'data:';
+//        $this->ui['data'] = new QLabel($this);
+//
+//        $this->layout()->addWidget($data, $row, 2);
+//        $this->layout()->addWidget($this->ui['data'], $row, 3);
+//
+//        $zhandle = new QLabel($this);
+//        $zhandle->text = 'zhandle:';
+//        $this->ui['zhandle'] = new QLabel($this);
+//
+//        $this->layout()->addWidget($zhandle, $row, 4);
+//        $this->layout()->addWidget($this->ui['zhandle'], $row, 5);
+//
+//        $row++;
+//
+//        $this->ui['command'] = new QLabel($this);
+//
+//        $this->layout()->addWidget($this->ui['command'], $row, 0, 1, 3);
+    }
+
+    public function setZClass($value)
+    {
+        $this->zClass->text = $value;
+    }
+
+    public function setQtClass($value)
+    {
+        $this->qtClass->text = $value;
     }
     
     public function set($key, $value) {

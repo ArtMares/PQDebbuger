@@ -24,41 +24,41 @@ class PQDebugger extends QWidget {
         
         $this->server = new QLocalServer($this);
         $this->server->listen('PQDebugger');
-        $this->server->connect(SIGNAL('newConnection()'), $this, SLOT('incomingConnection()'));
+        $this->server->connect(SIGNAL('newConnection()'), $this, SLOT('slot_incomingConnection()'));
     }
     
     private function initComponents() {
         $this->tabs = new QTabWidget($this);
         $this->tabs->tabsClosable = true;
-        $this->tabs->connect(SIGNAL('tabCloseRequested(int)'), $this, SLOT('tabClose(int)'));
+        $this->tabs->connect(SIGNAL('tabCloseRequested(int)'), $this, SLOT('slot_tabClose(int)'));
         
         $this->setLayout(new QVBoxLayout());
         $this->layout()->addWidget($this->tabs);
     }
     
-    public function incomingConnection() {
+    public function slot_incomingConnection() {
         $socket = $this->server->nextPendingConnection();
-        $socket->connect(SIGNAL('readyRead()'), $this, SLOT('readDebugData()'));
-        $socket->connect(SIGNAL('disconnected()'), $this, SLOT('disconnectConnection()'));
+        $socket->connect(SIGNAL('readyRead()'), $this, SLOT('slot_readDebugData()'));
+        $socket->connect(SIGNAL('disconnected()'), $this, SLOT('slot_disconnectConnection()'));
         
         $this->sockets[] = $socket;
     }
     
-    public function disconnectConnection($sender) {
+    public function slot_disconnectConnection($sender) {
         $index = array_search($sender, $this->sockets);
         if($index !== false) unset($this->sockets[$index]);
     }
     
-    public function tabClose($sender, $index) {
+    public function slot_tabClose($sender, $index) {
         if(isset($this->clients[$index])) {
             unset($this->clients[$index]);
         }
         $this->tabs->removeTab($index);
     }
     
-    public function readDebugData($sender) {
+    public function slot_readDebugData($sender) {
         $this->debugBuffer = $sender->readAll();
-        
+        echo $this->debugBuffer.PHP_EOL;
         $pos = strpos($this->debugBuffer, ":::%");
         
         while($pos !== false) {

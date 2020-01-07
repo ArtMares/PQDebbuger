@@ -15,7 +15,11 @@
         "template": "app"
     },
     "config": [
+        "QT += svg"
     ],
+    "debug": {
+        "socketName": ""
+    },
     "includes": [
         "core:Qt"
     ],
